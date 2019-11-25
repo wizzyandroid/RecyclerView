@@ -1,6 +1,7 @@
 package com.wizzyst.recyclerview.view.list;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.wizzyst.recyclerview.R;
 import com.wizzyst.recyclerview.data.User;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
         setTitle("User");
 
         ListAdapter adapter = new ListAdapter();
+
+        adapter.addOnItemClickListener(new ListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(User item) {
+                Toast.makeText(MainActivity.this, item.getName() + " Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         rvList.setLayoutManager(new LinearLayoutManager(this));
         rvList.setHasFixedSize(true);

@@ -23,11 +23,16 @@ import java.util.List;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private List<User> data = new ArrayList<>();
+    private OnItemClickListener listener;
 
     void insertData(List<User> data) {
         this.data.clear();
         this.data.addAll(data);
         notifyDataSetChanged();
+    }
+
+    void addOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
     }
 
     /**
@@ -69,10 +74,23 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             tvAddress = itemView.findViewById(R.id.tv_address);
         }
 
-        void bind(User item) {
+        void bind(final User item) {
             tvName.setText(item.getName());
             tvAge.setText(String.format("%s Years Old", item.getAge()));
             tvAddress.setText(item.getAddress());
+
+            if (listener != null){
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        listener.onItemClick(item);
+                    }
+                });
+            }
         }
+    }
+
+    interface OnItemClickListener{
+        void onItemClick(User item);
     }
 }
