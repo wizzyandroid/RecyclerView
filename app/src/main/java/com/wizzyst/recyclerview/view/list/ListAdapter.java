@@ -31,6 +31,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+    void addData(List<User> newData){
+        int position = data.size();
+        this.data.addAll(newData);
+        notifyItemRangeInserted(position, newData.size());
+    }
+
     void addOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }

@@ -7,9 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.wizzyst.recyclerview.R;
 import com.wizzyst.recyclerview.data.User;
+import com.wizzyst.recyclerview.utils.InfiniteScrollListener;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView rvList;
+    private SwipeRefreshLayout refreshLayout;
 
     private List<User> data;
 
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rvList = findViewById(R.id.rv_list);
+        refreshLayout = findViewById(R.id.srl_refresh);
 
         initDummyData();
         initView();
@@ -48,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         setTitle("User");
 
-        ListAdapter adapter = new ListAdapter();
+        final ListAdapter adapter = new ListAdapter();
 
         adapter.addOnItemClickListener(new ListAdapter.OnItemClickListener() {
             @Override
@@ -61,6 +65,32 @@ public class MainActivity extends AppCompatActivity {
         rvList.setHasFixedSize(true);
         rvList.setAdapter(adapter);
 
+        rvList.addOnScrollListener(new InfiniteScrollListener(){
+            @Override
+            public boolean canLoadMore() {
+                //tulis code untuk menentukan kapan harus load more
+                //misal if (data.size() < totalData) return true;
+                //else return false;
+                return true;
+            }
+
+            @Override
+            public void onLoadMore() {
+                //lakukan action untuk mengambil data baru, contoh:
+                adapter.addData(data);
+            }
+        });
+
         adapter.insertData(data);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //tulis logic setelah melakukan swipe
+                initDummyData();
+                initView();
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
 }
